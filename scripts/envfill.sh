@@ -273,3 +273,55 @@ then
 		fi
 	done
 fi
+while :
+do
+	read -r -p "Уведомлять об состоянии в Телеграм? [Y\n] " ERROR_NOTIFICATION_TELEGRAM
+	if [[ $ERROR_NOTIFICATION_TELEGRAM =~ ^(Y|y)$ ]]
+	then
+		sed -i "s/^REPORT_SEND_TELEGRAM.*$/REPORT_SEND_TELEGRAM=true/g" .env
+        sed -i "s/^ERROR_NOTIFICATION_TELEGRAM.*$/ERROR_NOTIFICATION_TELEGRAM=true/g" .env
+		break
+	elif [[ $ERROR_NOTIFICATION_TELEGRAM =~ ^(N|n)$ ]]
+	then
+		sed -i "s/^REPORT_SEND_TELEGRAM.*$/REPORT_SEND_TELEGRAM=false/g" .env
+        sed -i "s/^ERROR_NOTIFICATION_TELEGRAM.*$/ERROR_NOTIFICATION_TELEGRAM=false/g" .env
+		break
+	else
+		echo -e "${RED}Сделайте правильный выбор${NC}"
+		continue
+	fi
+done
+
+if [[ $ERROR_NOTIFICATION_TELEGRAM =~ ^(Y|y)$ ]]
+then
+	while :
+	do
+		read -r -p "Укажите токен бота: " TELEGRAM_ACCESS_TOKEN
+		if [[ $TELEGRAM_ACCESS_TOKEN != "" ]]
+		then
+			sed -i "s~^TELEGRAM_ACCESS_TOKEN.*$~TELEGRAM_ACCESS_TOKEN=$TELEGRAM_ACCESS_TOKEN~g" .env
+			break
+		else
+		echo -e "${RED}Значение не должно быть пустым${NC}"
+			continue
+		fi
+	done
+fi
+
+if [[ $ERROR_NOTIFICATION_TELEGRAM =~ ^(Y|y)$ ]]
+then
+	while :
+	do
+		read -r -p "Укажите чат-айди: " TELEGRAM_CHATID_NOTIFY
+		if [[ $TELEGRAM_CHATID_NOTIFY != "" ]]
+		then
+			sed -i "s/^TELEGRAM_CHATID_NOTIFY.*$/TELEGRAM_CHATID_NOTIFY=$TELEGRAM_CHATID_NOTIFY/g" .env
+            sed -i "s/^TELEGRAM_CHATID_REPORT.*$/TELEGRAM_CHATID_REPORT=$TELEGRAM_CHATID_REPORT/g" .env
+			break
+		else
+		echo -e "${RED}Значение не должно быть пустым${NC}"
+			continue
+		fi
+	done
+fi
+done
